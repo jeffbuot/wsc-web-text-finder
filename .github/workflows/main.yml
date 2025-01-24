@@ -1,0 +1,69 @@
+name: Build, Publish, and Release WPF App
+
+on:
+  workflow_dispatch:  # Manually trigger the workflow
+# on:
+#   push:
+#     branches:
+#       - main  # Trigger action on push to the main branch
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Set up .NET SDK (specify version if needed)
+      - name: Set up .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0'  # Replace with your desired version of .NET
+
+      # Step 3: Restore dependencies
+      - name: Restore dependencies
+        run: dotnet restore
+
+      # Step 4: Build the application
+      - name: Build application
+        run: dotnet build --configuration Release
+
+      # Step 5: Publish the application
+      - name: Publish application
+        run: dotnet publish --configuration Release --output ./publish
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest  # This could be 'windows-latest' or 'ubuntu-latest'
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Create a release
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ./publish/**/*  # Upload all files from the 'publish' folder to the release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  upload-artifacts:
+    needs: build
+    runs-on: windows-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Step 2: Upload artifacts (if needed)
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: wpf-app-artifacts
+          path: ./publish
