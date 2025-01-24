@@ -18,7 +18,7 @@ namespace WSC.WebTextFinder.ViewModels;
 public class MainViewModel : ViewModelBase {
 
     public ICommand ClearLogsCommand { get; }
-    public ICommand SearchCommand { get; }
+    public AsynchronousCommand SearchCommand { get; }
     public ICommand CancelSearchCommand { get; }
     public ICommand OpenHyperlinkCommand { get; }
 
@@ -28,10 +28,12 @@ public class MainViewModel : ViewModelBase {
         ClearLogsCommand = new RelayCommand(ClearLogs);
         //AddLogCommand = new RelayCommand(() => AddLog("Test"));
         OpenHyperlinkCommand = new RelayCommand<string>(OpenHyperlink);
-        SearchCommand = new AsyncRelayCommand(StartSearch);
+        SearchCommand = new AsynchronousCommand(StartSearchAsync);
         CrawlerService = ServiceLocator.Resolve<HttpCrawlerService>();
         CrawlerService.SearchProgressUpdate += CrawlerService_SearchProgressUpdate;
-        ClearLogsCommand = new RelayCommand(() => { });
+        CancelSearchCommand = new RelayCommand(() => {
+            SearchCommand.Cancel();
+        });
     }
 
     private void CrawlerService_SearchProgressUpdate(object sender, SearchProgressUpdateEventArgs arg) {
@@ -50,7 +52,9 @@ public class MainViewModel : ViewModelBase {
         }
         else if (arg.State == SearchProgressState.KeywordFound) {
             var paragraph = new Paragraph();
-            paragraph.Inlines.Add(new Run($"Found keword {arg.Keyword} with {arg.MatchCount} {(arg.MatchCount > 1 ? "match" : "matches")} in "));
+            paragraph.Inlines.Add(new Run($"Found keword '{arg.Keyword}' with {arg.MatchCount} {(arg.MatchCount > 1 ? "match" : "matches")} in ") {
+                Foreground = new BrushConverter().ConvertFromString("#24b362") as Brush
+            });
             paragraph.Inlines.Add(new Hyperlink(new Run(arg.Url)) {
                 Command = OpenHyperlinkCommand,
                 CommandParameter = arg.Url
@@ -66,9 +70,26 @@ public class MainViewModel : ViewModelBase {
             });
             LogMessages.Add(paragraph);
         }
+        else if (arg.State == SearchProgressState.Interrupted) {
+            var paragraph = new Paragraph();
+            paragraph.Inlines.Add(new Run("Search interrupted.") {
+                Foreground = new BrushConverter().ConvertFromString("#f5425d") as Brush
+            });
+            paragraph.Inlines.Add(new LineBreak());
+            LogMessages.Add(paragraph);
+        }
+        else if (arg.State == SearchProgressState.Done) {
+            var paragraph = new Paragraph();
+            paragraph.Inlines.Add(new Run($"Search finished! Found total of {arg.MatchCount} " +
+                $"{(arg.MatchCount > 1 ? "matches" : "match")} for keyword '{arg.Keyword}'.") {
+                Foreground = new BrushConverter().ConvertFromString("#24b362") as Brush
+            });
+            paragraph.Inlines.Add(new LineBreak());
+            LogMessages.Add(paragraph);
+        }
     }
 
-    private async Task StartSearch() {
+    private async Task StartSearchAsync(CancellationToken cancellationToken = default) {
 
         SearchButtonText = "Validating ...";
         IsValidUrl = await ValidateUrl(WebsiteUrl);
@@ -89,7 +110,7 @@ public class MainViewModel : ViewModelBase {
 
         LogMessages.Add(paragraph);
 
-        await CrawlerService.SearchKeyword(WebsiteUrl, SearchKeyword);
+        await CrawlerService.SearchKeywordAsync(WebsiteUrl, SearchKeyword, IsMatchCase, cancellationToken);
         IsProcessing = false;
         SearchButtonText = "Search";
     }

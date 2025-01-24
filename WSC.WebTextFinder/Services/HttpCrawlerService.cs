@@ -25,12 +25,12 @@ namespace WSC.WebTextFinder.Services {
             _urlsToVisit = new Queue<string>();
         }
 
-        public async Task SearchKeyword(string webUrl, string keyword, bool isMatchCase = false) {
+        public async Task SearchKeywordAsync(string webUrl, string keyword, bool isMatchCase = false, CancellationToken cancellationToken = default) {
             VisitedUrls.Clear();
             _urlsToVisit.Clear();
-
+            int totalMatches = 0;
             _urlsToVisit.Enqueue(webUrl);
-            
+
             // Ensure that the web url does not ends with /
             if (webUrl.EndsWith("/")) {
                 webUrl = webUrl.TrimEnd('/');
@@ -38,6 +38,11 @@ namespace WSC.WebTextFinder.Services {
 
             while (_urlsToVisit.Count > 0) {
                 var currentUrl = _urlsToVisit.Dequeue();
+                if (cancellationToken.IsCancellationRequested) {
+                    OnSearchProgressUpdate(SearchProgressState.Interrupted, currentUrl, keyword);
+                    return;
+                }
+
                 if (VisitedUrls.Contains(currentUrl))
                     continue;
 
@@ -54,6 +59,7 @@ namespace WSC.WebTextFinder.Services {
 
                         //Console.WriteLine($"Found '{keyword}' {count} times on page: {currentUrl}");
                         OnSearchProgressUpdate(SearchProgressState.KeywordFound, currentUrl, keyword, matchCount);
+                        totalMatches += matchCount;
                     }
 
 
@@ -63,12 +69,16 @@ namespace WSC.WebTextFinder.Services {
                                  !VisitedUrls.Contains(link) && link.StartsWith("/") || link.StartsWith(webUrl))) {
                         _urlsToVisit.Enqueue(link.StartsWith("/") ? $"{webUrl}{link}" : link);
                     }
+
+
                 }
                 catch (Exception ex) {
                     //Console.WriteLine($"Error fetching {currentUrl}: {ex.Message}");
                     OnSearchProgressUpdate(SearchProgressState.Error, currentUrl, keyword, errorMessage: ex.Message);
                 }
             }
+
+            OnSearchProgressUpdate(SearchProgressState.Done, webUrl, keyword, totalMatches);
         }
 
         public void OnSearchProgressUpdate(SearchProgressState state, string url, string keyword, int matchCount = 0, string errorMessage = "") {
@@ -115,7 +125,7 @@ namespace WSC.WebTextFinder.Services {
     }
 
     public enum SearchProgressState {
-        Visiting, KeywordFound, Error
+        Visiting, KeywordFound, Done, Interrupted, Error
     }
 
     public class SearchProgressUpdateEventArgs : EventArgs {

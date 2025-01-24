@@ -30,14 +30,13 @@ public class RelayCommand<T> : ICommand {
 
     public event EventHandler CanExecuteChanged;
 }
-public class AsyncRelayCommand : ICommand {
-    private readonly Func<Task> _execute;
+public class AsynchronousCommand : ICommand {
+    private readonly Func<CancellationToken, Task> _execute;
     private readonly Func<bool> _canExecute;
+    private CancellationTokenSource _cancellationTokenSource;
     private bool _isExecuting;
 
-    public event EventHandler CanExecuteChanged;
-
-    public AsyncRelayCommand(Func<Task> execute, Func<bool> canExecute = null) {
+    public AsynchronousCommand(Func<CancellationToken, Task> execute, Func<bool> canExecute = null) {
         _execute = execute ?? throw new ArgumentNullException(nameof(execute));
         _canExecute = canExecute;
     }
@@ -47,20 +46,28 @@ public class AsyncRelayCommand : ICommand {
     }
 
     public async void Execute(object parameter) {
-        if (CanExecute(parameter)) {
-            try {
-                _isExecuting = true;
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty); 
-                await _execute();
-            }
-            finally {
-                _isExecuting = false;
-                CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-            }
+        _isExecuting = true;
+        _cancellationTokenSource = new CancellationTokenSource();
+        RaiseCanExecuteChanged();
+
+        try {
+            await _execute(_cancellationTokenSource.Token);
+        }
+        finally {
+            _isExecuting = false;
+            RaiseCanExecuteChanged();
         }
     }
 
-    public void RaiseCanExecuteChanged() {
+    public void Cancel() {
+        if (_isExecuting) {
+            _cancellationTokenSource.Cancel();
+        }
+    }
+
+    public event EventHandler CanExecuteChanged;
+
+    protected virtual void RaiseCanExecuteChanged() {
         CanExecuteChanged?.Invoke(this, EventArgs.Empty);
     }
 }
