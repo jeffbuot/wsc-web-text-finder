@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,6 +21,17 @@ namespace WSC.WebTextFinder.Views {
     public partial class MainView : UserControl {
         public MainView() {
             InitializeComponent();
+        }
+        private void Hyperlink_Click(object sender, RoutedEventArgs e) {
+            if (sender is Hyperlink hyperlink && hyperlink.NavigateUri != null) {
+                Process.Start(new ProcessStartInfo(hyperlink.NavigateUri.AbsoluteUri) { UseShellExecute = true });
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e) {
+
+                Process.Start(new ProcessStartInfo("https://www.youtube.com") { UseShellExecute = true });
+            
         }
     }
 }

@@ -5,18 +5,110 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WSC.WebTextFinder.Views" 
              xmlns:core="clr-namespace:WSC.WebTextFinder.Core" 
-             xmlns:viewmodels="clr-namespace:WSC.WebTextFinder.ViewModels"
+             xmlns:viewmodels="clr-namespace:WSC.WebTextFinder.ViewModels" 
+             xmlns:behaviors="clr-namespace:WSC.WebTextFinder.Behaviors"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" 
              DataContext="{core:ServiceProvider Type=viewmodels:MainViewModel}"
              >
-
-    <Grid Margin="5">
+    <Grid Margin="15 15 15 4">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <TextBox Tag="Test" Text="{Binding WebsiteUrl,Mode=TwoWay}"/>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="110"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel Grid.ColumnSpan="2" Margin="0 0 0 20">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock VerticalAlignment="Center" FontSize="18" FontWeight="Bold" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xECAD; "/>
+                <TextBlock FontSize="18" FontWeight="Bold" Text="Wild Sea Creative Tool - Web Text Finder"/>
+            </StackPanel>
+            <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0 0 0 0" Text="A powerful tool that searches for a specific keyword across an entire website, scanning all pages to help you quickly locate relevant content. Ideal for researchers, SEO analysts, and developers, it streamlines website exploration with precision and efficiency."/>
+        </StackPanel>
+
+        <Label Grid.Row="1" VerticalAlignment="Top" Content="Website Url:"  Margin="0 5 0 0"/>
+        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 0 0 5">
+            <TextBox Tag="Test"  Text="{Binding WebsiteUrl,Mode=TwoWay}"/>
+            <!--This will only be visible if WebsiteUrl is invalid so we pass inverse parameter-->
+            <Label Visibility="{Binding IsValidUrl, Converter={StaticResource BoolToVisibilityConverter},ConverterParameter='Invert'}" VerticalAlignment="Center" FontSize="11" Foreground="#f5425d" Content="Please enter a valid url."/>
+        </StackPanel>
+
+        <Label Grid.Row="2" VerticalAlignment="Top" Content="Search Keyword:"  Margin="0 5 0 0"/>
+        <StackPanel Grid.Row="2" Grid.Column="1" Margin="0 0 0 5">
+            <TextBox  Text="{Binding SearchKeyword,Mode=TwoWay}"/>
+            <!--This will only be visible if SearchKeyword is invalid so we pass inverse parameter-->
+            <Label Visibility="{Binding IsValidKeyword, Converter={StaticResource BoolToVisibilityConverter},ConverterParameter='Invert'}" VerticalAlignment="Center" FontSize="11" Foreground="#f5425d" Content="Please enter a keyword text."/>
+        </StackPanel>
+
+        <Grid HorizontalAlignment="Right" Grid.Row="3" Margin="0 5 0 0" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox Content="Match Case" IsChecked="{Binding IsMatchCase}"></CheckBox>
+            <Button Grid.Column="1"   Command="{Binding SearchCommand}">
+                <StackPanel Margin="4" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock  Margin="0 4 4 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xE721;"/>
+                    <TextBlock Text="{Binding SearchButtonText}"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+        <ProgressBar Grid.Row="4" Grid.ColumnSpan="2" Margin="3" IsIndeterminate="True" />
+
+        <TabControl Grid.Row="5"  Grid.ColumnSpan="2" Margin="0,8,0,0">
+            <TabItem IsSelected="True">
+                <TabItem.Header>
+                    <StackPanel Margin="4" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock  Margin="0 4 4 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xE9D5;"/>
+                        <TextBlock>Results Summary</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+
+                    <RichTextBox Name="richTextBox" IsReadOnly="True" FontSize="13" 
+                                 behaviors:RichTextBoxBehavior.BindableDocument="{Binding LogMessages}" 
+                                 IsDocumentEnabled="True">
+                        <FlowDocument LineHeight="1">
+                            <FlowDocument.Resources>
+                                <Style TargetType="Paragraph">
+                                    <Style.Setters>
+                                        <Setter Property="FontSize" Value="14"/>
+                                        <Setter Property="FontFamily" Value="Consolas"/>
+
+                                    </Style.Setters>
+                                </Style>
+                                <Style TargetType="Hyperlink">
+                                    <Style.Setters>
+                                        <Setter Property="Foreground" Value="{StaticResource ResourceKey=AccentTextFillColorSecondaryBrush}"/>
+                                    </Style.Setters>
+                                </Style>
+                            </FlowDocument.Resources>
+
+                        </FlowDocument>
+                    </RichTextBox>
+                </Grid>
+            </TabItem>
+            <TabItem >
+                <TabItem.Header>
+                    <StackPanel Margin="4" Orientation="Horizontal" VerticalAlignment="Center">
+                        <TextBlock  Margin="0 4 4 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xE774;"/>
+                        <TextBlock>Process Log</TextBlock>
+                    </StackPanel>
+                </TabItem.Header>
+                <Grid>
+                    <DataGrid ItemsSource="{Binding ViewModel.ProductsCollection, Mode=TwoWay}" />
+                </Grid>
+            </TabItem>
+        </TabControl>
+        <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Margin="0 4 0 0"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal">
+            <TextBlock FontSize="10" VerticalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xEB52; "/>
+            <TextBlock  Text="Developed By: Jeff Buot" FontSize="10"/>
+        </StackPanel>
     </Grid>
 </UserControl>
