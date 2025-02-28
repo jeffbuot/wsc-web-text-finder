@@ -338,7 +338,7 @@ string[] ruralPostcodes =
     "7886", "9781", "9782", "9783", "9891", "9892", "9893"
 ];
 
-foreach (var kvp in nzRegionalPostCodes){
+foreach (var kvp in nzRegionalPostCodes.OrderBy(p=>p.Key)){
     var currentList = kvp.Value.Select(code => code.PadLeft(4, '0')).ToArray();
     var urbanPostCodes = currentList.Except(ruralPostcodes).ToList();
     Console.WriteLine($"{kvp.Key} Urban postcodes: ");
