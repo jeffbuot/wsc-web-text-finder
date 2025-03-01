@@ -1,4 +1,5 @@
 ﻿// Data is based from this website https://www.addysolutions.com/nz-postcode-list
+
 var nzRegionalPostCodes = new Dictionary<string, string[]>
 {
     {
@@ -100,7 +101,7 @@ var nzRegionalPostCodes = new Dictionary<string, string[]>
         ]
     },
     {
-        "Wellington", [
+        "Greater Wellington", [
             "5713", "5743", "5791", "5792", "5792", "4994", "4996", "4996", "5710", "5740",
             "5771", "5772", "5773", "5712", "5742", "5794", "6972", "5573", "5010", "5011",
             "5012", "5013", "5014", "5018", "5019", "5019", "5040", "5041", "5042", "5044",
@@ -275,6 +276,22 @@ var nzRegionalPostCodes = new Dictionary<string, string[]>
             "173", "174", "175",
             "176", "178", "178", "179"
         ]
+    },
+    {
+        "Gisborne",
+        [
+            "4010", "4040", "4041", "4050", "4051", "4052", "4053", "4054", "4060",
+            "4071", "4072", "4073", "4075", "4077", "4078", "4079", "4081", "4082",
+            "4083", "4086", "4087", "4091", "4092", "4093", "4094", "4095", "4096",
+            "4097", "4098", "4099", "4042", "4043", "4044", "4045", "4046", "4047",
+            "4048", "4049"
+        ]
+    },
+    {
+        "Chatham Islands",
+        [
+            "8942", "8944"
+        ]
     }
 };
 
@@ -338,8 +355,9 @@ string[] ruralPostcodes =
     "7886", "9781", "9782", "9783", "9891", "9892", "9893"
 ];
 
-foreach (var kvp in nzRegionalPostCodes.OrderBy(p=>p.Key)){
-    var currentList = kvp.Value.Select(code => code.PadLeft(4, '0')).ToArray();
+foreach (var kvp in nzRegionalPostCodes.OrderBy(p => p.Key))
+{
+    var currentList = kvp.Value.Select(code => code.Trim().PadLeft(4, '0')).ToArray();
     var urbanPostCodes = currentList.Except(ruralPostcodes).ToList();
     Console.WriteLine($"{kvp.Key} Urban postcodes: ");
     Console.WriteLine(string.Join(",", urbanPostCodes));
