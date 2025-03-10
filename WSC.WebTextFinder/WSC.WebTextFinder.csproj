@@ -10,6 +10,15 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\bg.jpg" />
+    <None Remove="Images\new-zealand.png" />
+    <None Remove="Images\search-engine-optimization.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\bg.jpg" />
+    <Resource Include="Images\new-zealand.png" />
+    <Resource Include="Images\search-engine-optimization.png" />
     <Content Include="loupe.ico" />
   </ItemGroup>
 

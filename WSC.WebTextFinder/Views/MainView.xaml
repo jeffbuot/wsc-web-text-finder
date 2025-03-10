@@ -10,117 +10,52 @@
              mc:Ignorable="d" 
              DataContext="{core:ServiceProvider Type=viewmodels:MainViewModel}"
              >
-    <Grid Margin="15 15 15 4">
+    <Grid Margin="10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="110"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel Grid.ColumnSpan="2" Margin="0 0 0 20">
-            <StackPanel Orientation="Horizontal">
-                <TextBlock VerticalAlignment="Center" Foreground="Aquamarine" FontSize="18" FontWeight="Bold" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xECAD; "/>
-                <TextBlock FontSize="18" Foreground="Aquamarine" FontWeight="Bold" Text="Wild Sea Creative Tool - Web Text Finder"/>
-            </StackPanel>
-            <TextBlock TextWrapping="Wrap" FontSize="12" Margin="0 0 0 0" Text="A powerful tool that searches for a specific keyword across an entire website, scanning all pages to help you quickly locate relevant content. Ideal for researchers, SEO analysts, and developers, it streamlines website exploration with precision and efficiency."/>
-        </StackPanel>
+        <StackPanel Margin="20">
+            <TextBlock FontSize="18" Foreground="{StaticResource ResourceKey=TextFillColorPrimaryBrush}" FontWeight="Bold" Text="Wild Sea Creative Tools"/>
+            <TextBlock FontSize="14" Foreground="{StaticResource ResourceKey=TextFillColorPrimaryBrush}" TextWrapping="Wrap" Text="This is a personal collection of tools I use to handle repetitive tasks more efficiently. Each tool is designed to save time, reduce manual effort, and simplify everyday workflows."/>
 
-        <Label Grid.Row="1" VerticalAlignment="Top" Content="Website Url:"  Margin="0 5 0 0"/>
-        <StackPanel Grid.Row="1" Grid.Column="1" Margin="0 0 0 5">
-            <TextBox Tag="Test"  Text="{Binding WebsiteUrl,Mode=TwoWay}"/>
-            <!--This will only be visible if WebsiteUrl is invalid so we pass inverse parameter-->
-            <Label Visibility="{Binding IsValidUrl, Converter={StaticResource BoolToVisibilityConverter},ConverterParameter='Invert'}" VerticalAlignment="Center" FontSize="11" Foreground="#f5425d" Content="Please enter a valid url."/>
         </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+            <StackPanel.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="BorderBrush" Value="{StaticResource ResourceKey=ControlElevationBorderBrush}"/>
+                    <Setter Property="BorderThickness" Value="1"/>
+                    <Setter Property="CornerRadius" Value="4"/>
+                    <Setter Property="Margin" Value="4"/>
+                    <Setter Property="Padding" Value="20"/>
+                    <Setter Property="Background" Value="{StaticResource ResourceKey=ControlOnImageFillColorDefaultBrush}"/>
+                    <Setter Property="Cursor" Value="Hand"/>
+                    <Setter Property="Width" Value="200"/>
 
-        <Label Grid.Row="2" VerticalAlignment="Top" Content="Search Keyword:"  Margin="0 5 0 0"/>
-        <StackPanel Grid.Row="2" Grid.Column="1" Margin="0 0 0 0">
-            <TextBox  Text="{Binding SearchKeyword,Mode=TwoWay}"/>
-            <!--This will only be visible if SearchKeyword is invalid so we pass inverse parameter-->
-            <Label Visibility="{Binding IsValidKeyword, Converter={StaticResource BoolToVisibilityConverter},ConverterParameter='Invert'}" VerticalAlignment="Center" FontSize="11" Foreground="#f5425d" Content="Please enter a keyword text."/>
-        </StackPanel>
-
-        <Grid Grid.Row="3" Margin="0 5 0 0" Grid.ColumnSpan="2" HorizontalAlignment="Right">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto"/>
-            </Grid.ColumnDefinitions>
-             
-            <CheckBox Content="Match Case" IsChecked="{Binding IsMatchCase}"></CheckBox>
-            <Button Grid.Column="1"   Command="{Binding SearchCommand}">
-                <StackPanel Margin="4" Orientation="Horizontal" VerticalAlignment="Center">
-                    <TextBlock  Margin="0 4 4 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xE721;"/>
-                    <TextBlock Text="{Binding SearchButtonText}"/>
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource ControlOnImageFillColorSecondaryBrush}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Foreground" Value="{StaticResource ResourceKey=TextFillColorPrimaryBrush}"/>
+                </Style>
+            </StackPanel.Resources>
+            <Border MouseLeftButtonUp="Border_MouseLeftButtonUp_TextFinder">
+                <StackPanel>
+                    <Image Source="pack://application:,,,/Images/search-engine-optimization.png" Width="64"/>
+                    <TextBlock Text="Website Text Finder" FontWeight="Bold" HorizontalAlignment="Center"/>
                 </StackPanel>
-            </Button>
-            <Button Grid.Column="2"   Command="{Binding CancelSearchCommand}" Visibility="{Binding IsProcessing, Converter={StaticResource BoolToVisibilityConverter}}" Margin="10 0 0 0">
-                <StackPanel Margin="4" Orientation="Horizontal" VerticalAlignment="Center" >
-                    <TextBlock  Margin="0 4 4 0" Foreground="#f5425d" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xE894;"/>
-                    <TextBlock Text="Cancel Search" Foreground="#f5425d"/>
+            </Border>
+            <Border MouseLeftButtonUp="Border_MouseLeftButtonUp_NZPostcodes">
+                <StackPanel>
+                    <Image Source="/Images/new-zealand.png" Width="64"/>
+                    <TextBlock Text="NZ Postcodes Filter" FontWeight="Bold" HorizontalAlignment="Center"/>
                 </StackPanel>
-            </Button>
-        </Grid>
-
-        <TabControl Grid.Row="4"  Grid.ColumnSpan="2" >
-            <TabItem IsSelected="True">
-                <TabItem.Header>
-                    <StackPanel Margin="4" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock  Margin="0 4 4 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xE9D5;"/>
-                        <TextBlock>Results Summary</TextBlock>
-                    </StackPanel>
-                </TabItem.Header>
-                <Grid>
-
-                    <RichTextBox Name="richTextBox" IsReadOnly="True" FontSize="13" 
-                                 behaviors:RichTextBoxBehavior.BindableDocument="{Binding LogMessages}" 
-                                 IsDocumentEnabled="True">
-                        <FlowDocument LineHeight="1">
-                            <FlowDocument.Resources>
-                                <Style TargetType="Paragraph">
-                                    <Style.Setters>
-                                        <Setter Property="FontSize" Value="14"/>
-                                        <Setter Property="FontFamily" Value="Consolas"/>
-
-                                    </Style.Setters>
-                                </Style>
-                                <Style TargetType="Hyperlink">
-                                    <Style.Setters>
-                                        <Setter Property="Foreground" Value="{StaticResource ResourceKey=AccentTextFillColorSecondaryBrush}"/>
-                                    </Style.Setters>
-                                </Style>
-                            </FlowDocument.Resources>
-
-                        </FlowDocument>
-                    </RichTextBox>
-                    <Button HorizontalAlignment="Right" VerticalAlignment="Top" Margin="4" Command="{Binding ClearLogsCommand}" ToolTip="Clear logs.">
-                        <TextBlock FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xED62;"/>
-                    </Button>
-                </Grid>
-            </TabItem>
-            <!--<TabItem >
-                <TabItem.Header>
-                    <StackPanel Margin="4" Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock  Margin="0 4 4 0" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xE774;"/>
-                        <TextBlock>Process Log</TextBlock>
-                    </StackPanel>
-                </TabItem.Header>
-                <Grid>
-                    <DataGrid ItemsSource="{Binding ViewModel.ProductsCollection, Mode=TwoWay}" />
-                </Grid>
-            </TabItem>-->
-        </TabControl>
-        <ProgressBar Grid.Row="5"  Grid.ColumnSpan="2" Margin="3" IsIndeterminate="True" Visibility="{Binding IsProcessing, Converter={StaticResource BoolToVisibilityConverter}}" />
-
-        <StackPanel Grid.Row="6" Grid.ColumnSpan="2" Margin="0 4 0 0"  HorizontalAlignment="Right" VerticalAlignment="Bottom" Orientation="Horizontal">
-            <TextBlock FontSize="10" VerticalAlignment="Center" FontFamily="{StaticResource SymbolThemeFontFamily}" Text="&#xEB52; "/>
-            <TextBlock  Text="Developed By: Jeff Buot" FontSize="10"/>
+            </Border>
         </StackPanel>
+
     </Grid>
 </UserControl>

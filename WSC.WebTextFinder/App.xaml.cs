@@ -19,6 +19,8 @@ namespace WSC.WebTextFinder
             // This will cause issue of order in accessing other service from constructor.
             ServiceLocator.RegisterSingleton(new HttpCrawlerService());
             ServiceLocator.RegisterSingleton(new MainViewModel());
+            ServiceLocator.RegisterSingleton(new NZPostCodeViewModel());
+            ServiceLocator.RegisterSingleton(new WebTextSearchViewModel());
             //ServiceLocator.RegisterTransient(() => new TransientViewModel()); // Transient registration
 
         }

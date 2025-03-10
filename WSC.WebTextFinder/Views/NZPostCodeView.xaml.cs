@@ -1,4 +1,8 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -9,21 +13,16 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace WSC.WebTextFinder
+namespace WSC.WebTextFinder.Views
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for NZPostCodeView.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class NZPostCodeView : UserControl
     {
-        public MainWindow()
+        public NZPostCodeView()
         {
             InitializeComponent();
-            this.Loaded += MainWindow_Loaded;
-        }
-
-        private void MainWindow_Loaded(object sender, RoutedEventArgs e) {
-            MainFrame.Navigate(new Views.MainView(MainFrame));
         }
     }
 }

@@ -19,19 +19,20 @@ namespace WSC.WebTextFinder.Views {
     /// Interaction logic for MainView.xaml
     /// </summary>
     public partial class MainView : UserControl {
-        public MainView() {
+        public MainView(Frame mainFrame) {
             InitializeComponent();
-        }
-        private void Hyperlink_Click(object sender, RoutedEventArgs e) {
-            if (sender is Hyperlink hyperlink && hyperlink.NavigateUri != null) {
-                Process.Start(new ProcessStartInfo(hyperlink.NavigateUri.AbsoluteUri) { UseShellExecute = true });
-            }
+            MainFrame = mainFrame;
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e) {
+        public Frame MainFrame { get; }
 
-                Process.Start(new ProcessStartInfo("https://www.youtube.com") { UseShellExecute = true });
-            
+        private void Border_MouseLeftButtonUp_NZPostcodes(object sender, MouseButtonEventArgs e) {
+            MainFrame.Navigate(new NZPostCodeView());
+        }
+
+        private void Border_MouseLeftButtonUp_TextFinder(object sender, MouseButtonEventArgs e) {
+            MainFrame.Navigate(new WebTextSearchView());
+
         }
     }
 }
