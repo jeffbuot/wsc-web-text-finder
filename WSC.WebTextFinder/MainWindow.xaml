@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WSC.WebTextFinder" 
         xmlns:views="clr-namespace:WSC.WebTextFinder.Views"
         mc:Ignorable="d"
-        Title="WSC - Web Text Finder v1.0" Height="650" Width="900">
+        Title="Wild Sea Creative Toolbox v1.2" Height="650" Width="900">
     <Window.Background>
         <ImageBrush ImageSource="pack://application:,,,/Images/bg.jpg" Stretch="UniformToFill"/>
     </Window.Background>

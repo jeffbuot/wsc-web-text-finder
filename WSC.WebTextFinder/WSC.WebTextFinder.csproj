@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>loupe.ico</ApplicationIcon>
+    <ApplicationIcon>toolbox.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -19,7 +19,7 @@
     <Resource Include="Images\bg.jpg" />
     <Resource Include="Images\new-zealand.png" />
     <Resource Include="Images\search-engine-optimization.png" />
-    <Content Include="loupe.ico" />
+    <Content Include="toolbox.ico" />
   </ItemGroup>
 
   <ItemGroup>

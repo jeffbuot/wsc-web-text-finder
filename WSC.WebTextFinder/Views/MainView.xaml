@@ -41,18 +41,21 @@
                 </Style>
                 <Style TargetType="TextBlock">
                     <Setter Property="Foreground" Value="{StaticResource ResourceKey=TextFillColorPrimaryBrush}"/>
+                    <Setter Property="TextAlignment" Value="Left"/>
                 </Style>
             </StackPanel.Resources>
             <Border MouseLeftButtonUp="Border_MouseLeftButtonUp_TextFinder">
                 <StackPanel>
                     <Image Source="pack://application:,,,/Images/search-engine-optimization.png" Width="64"/>
-                    <TextBlock Text="Website Text Finder" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock Text="Website Text Finder" FontWeight="Bold" Margin="0 10 0 10"/>
+                    <TextBlock TextWrapping="Wrap" Text="Tool for searching text across a website and its affiliated pages."/>
                 </StackPanel>
             </Border>
             <Border MouseLeftButtonUp="Border_MouseLeftButtonUp_NZPostcodes">
                 <StackPanel>
                     <Image Source="/Images/new-zealand.png" Width="64"/>
-                    <TextBlock Text="NZ Postcodes Filter" FontWeight="Bold" HorizontalAlignment="Center"/>
+                    <TextBlock Text="NZ Postcodes Filter" FontWeight="Bold"  Margin="0 10 0 10"/>
+                    <TextBlock TextWrapping="Wrap" Text="Tool for classifying and displaying New Zealand postcodes."/>
                 </StackPanel>
             </Border>
         </StackPanel>
